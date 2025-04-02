@@ -50,9 +50,12 @@ class ContentViewModel
                             is Status.OnSuccess -> {
                                 _uiState.postValue(UIState.Success(it.response))
                                 if (it.response.isNotEmpty()) {
-                                    _result15thChar.postValue(UIState.Success(find15thCharacter(it.response)))
-                                    _resultEvery15thChar.postValue(UIState.Success(findEvery15thCharacter(it.response)))
-                                    _wordCountMap.postValue(UIState.Success(countWords(it.response)))
+                                    val result15thCharDeferred = async { find15thCharacter(it.response) } 
+                                    _result15thChar.postValue(UIState.Success(result15thCharDeferred.await()))
+                                    val resultEvery15thCharDeferred = async { findEvery15thCharacter(it.response) } 
+                                    _resultEvery15thChar.postValue(UIState.Success(resultEvery15thCharDeferred.await()))
+                                    val worldCountMapDeferred = async { countWords(it.response) } 
+                                    _wordCountMap.postValue(UIState.Success(worldCountMapDeferred.await()))
                                 } else {
                                     _result15thChar.postValue(UIState.Error(R.string.text_not_enough_character))
                                     _resultEvery15thChar.postValue(UIState.Error(R.string.text_not_enough_character))
